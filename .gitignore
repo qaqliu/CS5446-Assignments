@@ -1,0 +1,96 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.local
+*.secret
+
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache and build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+*.egg-info/
+pip-wheel-metadata/
+share/python-wheels/
+
+# Testing, coverage, and type-checking caches
+.pytest_cache/
+.mypy_cache/
+.pyre/
+.ruff_cache/
+.hypothesis/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+
+# Jupyter and interactive notebook files
+.ipynb_checkpoints/
+
+# Machine-learning outputs and model checkpoints
+**/chkpt/
+**/ckpt/
+**/checkpoint/
+**/checkpoints/
+**/model_outputs/
+**/outputs/
+**/runs/
+**/wandb/
+**/tensorboard/
+*.ckpt
+*.pt
+*.pth
+*.safetensors
+
+# Logs and generated archives
+*.log
+logs/
+*.zip
+*.tar
+*.tar.gz
+
+# Operating-system files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+Thumbs.db
+Desktop.ini
+
+# Editor and IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# AI coding-agent files and instructions
+.agents/
+.claude/
+.codex/
+.cursor/
+.continue/
+.roo/
+.windsurf/
+.aider*
+.clinerules
+.cursorrules
+AGENTS.md
+CLAUDE.md
+
