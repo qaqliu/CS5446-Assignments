@@ -94,3 +94,6 @@ Desktop.ini
 AGENTS.md
 CLAUDE.md
 
+# Temporary files
+tmp/
+
