@@ -5,15 +5,15 @@
 > Semester 1, AY2026-27 · Issued: 19 Aug 2026
 
 **Group Members**
-
-- Zhang Jiazheng (A0314707H)
-- Phyo Han (A0196680R)
-- Wang Shiyu (A0354696L)
-- Liu Hengyan (A0350634J)
+- Liu Hengyan    (A0350634J)  
+- Phyo Han       (A0196680R)  
+- Wang Shiyu     (A0354696L)  
+- Zhang Jiazheng (A0314707H)  
 
 ## AI Assistance Declaration
 
-> ChatGPT was used to help convert handwritten draft solutions into Markdown and to recreate hand-drawn figures as computer-generated diagrams.  I remain responsible for the accuracy, originality, and final content of this submission.
+> ChatGPT was used to help convert handwritten draft solutions into Markdown and to recreate hand-drawn figures as computer-generated diagrams.  
+We remain responsible for the accuracy, originality, and final content of this submission.
 
 ## Problem 1 – A Blocks World
 
@@ -42,7 +42,10 @@ Consider a blocks-world as shown in the figure below. The objective of this prob
 
 #### a) PDDL Model
 
+##### Assumptions
+The table can hold as many seperate block (or stacks of blocks) as possible.
 
+##### Solutions
 ```pddl
 (define (domain middle-pop)
   (:requirements :strips :typing)
@@ -114,12 +117,14 @@ $$
 S_{\mathrm{old}} \subseteq S_{\mathrm{new}}.
 $$
 
-At time $t$, let $s^t_{\mathrm{old}}$ and $s^t_{\mathrm{new}}$ denote the states reached in the original and relaxed problems, respectively. Let $Pos^t_{\mathrm{old}}$ and $Pos^t_{\mathrm{new}}$ be the sets of positive predicates that hold in $s^t_{\mathrm{old}}$ and $s^t_{\mathrm{new}}$, respectively. For every initial-state/action-sequence pair $(I, \langle a_i \rangle_{i<t})$, we prove the following two statements by induction on $t$:
+At time $t$, let $s^t_{\mathrm{old}}$ and $s^t_{\mathrm{new}}$ denote the states reached in the original and relaxed problems, respectively.  
+ Let $Pos^t_{\mathrm{old}}$ and $Pos^t_{\mathrm{new}}$ be the sets of positive predicates that hold in $s^t_{\mathrm{old}}$ and $s^t_{\mathrm{new}}$, respectively.  
+ For every initial-state/action-sequence pair $(I, \langle a_i \rangle_{i<t})$, we prove the following two statements by induction on $t$:
 
 1. For every action $a$, if $s^t_{\mathrm{old}} \models Cond(a)$, then $s^t_{\mathrm{new}} \models Cond(a)$.
 2. $Pos^t_{\mathrm{old}} \subseteq Pos^t_{\mathrm{new}}$.
 
-Statement 1 guarantees that an action applicable in the original problem is also applicable in the relaxed problem. Statement 2 guarantees that, if $s_{\mathrm{old}}^{t_{\mathrm{end}}} \models g$, then $s_{\mathrm{new}}^{t_{\mathrm{end}}} \models g$, because every literal in $g$ is positive.
+Statement 1 guarantees that an action applicable in the original problem is also applicable in the relaxed problem. Statement 2 guarantees that, if $s^{t_{\mathrm{end}}}_{\mathrm{old}} \models g$, then $s^{t_{\mathrm{end}}}_{\mathrm{new}} \models g$, because every literal in $g$ is positive.
 
 For the base case, at $t=0$,
 
