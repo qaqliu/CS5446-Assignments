@@ -286,21 +286,15 @@ Assuming negative literals are allowed in the initial state (closed world assump
 
 **i. $H1$**
 
-$
-Action(H1,\ Precond:\ \neg A,\ Effect:\ A \land \sim^\pm B)
-$
+$Action(H1, \mathrm{Precond}: \neg A, \mathrm{Effect}: A \land \sim^\pm B)$
 
 **ii. $H2$**
 
-$
-Action(H2,\ Precond:\ \neg B,\ Effect:\ \sim^+ A \land \sim^\pm C)
-$
+$Action(H2, \mathrm{Precond}: \neg B, \mathrm{Effect}: \sim^+ A \land \sim^\pm C)$
 
 **iii. $H3$**
 
-$
-Action(H3,\ Precond:\ \neg B \land \neg C,\ Effect:\ D \land E)
-$
+$Action(H3, \mathrm{Precond}: \neg B \land \neg C, \mathrm{Effect}: D \land E)$
 
 #### B)
 
