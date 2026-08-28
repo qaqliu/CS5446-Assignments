@@ -37,7 +37,131 @@ In classical planning, suppose goals and action preconditions are restricted to 
 
 ### Solution
 
-> _Solution placeholder: write your answer here._
+#### Part 1: Positive Preconditions and Goals
+
+Let $S_{\mathrm{old}}$ and $S_{\mathrm{new}}$ be the sets of solutions to the original problem and the relaxed problem, respectively. We prove that
+
+$$
+S_{\mathrm{old}} \subseteq S_{\mathrm{new}}.
+$$
+
+At time $t$, let $s^t_{\mathrm{old}}$ and $s^t_{\mathrm{new}}$ denote the states reached in the original and relaxed problems, respectively. Let $Pos^t_{\mathrm{old}}$ and $Pos^t_{\mathrm{new}}$ be the sets of positive predicates that hold in $s^t_{\mathrm{old}}$ and $s^t_{\mathrm{new}}$, respectively. For every initial-state/action-sequence pair $(I, \langle a_i \rangle_{i<t})$, we prove the following two statements by induction on $t$:
+
+1. For every action $a$, if $s^t_{\mathrm{old}} \models Cond(a)$, then $s^t_{\mathrm{new}} \models Cond(a)$.
+2. $Pos^t_{\mathrm{old}} \subseteq Pos^t_{\mathrm{new}}$.
+
+Statement 1 guarantees that an action applicable in the original problem is also applicable in the relaxed problem. Statement 2 guarantees that, if $s^{t_{\mathrm{end}}}_{\mathrm{old}} \models g$, then $s^{t_{\mathrm{end}}}_{\mathrm{new}} \models g$, because every literal in $g$ is positive.
+
+For the base case, at $t=0$,
+
+$$
+s^0_{\mathrm{old}} = s^0_{\mathrm{new}} = I,
+\qquad
+Pos^0_{\mathrm{old}} = Pos^0_{\mathrm{new}} = Pos_I.
+$$
+
+Therefore, Statement 2 holds immediately. Since every condition in $Cond(a)$ is a positive predicate, Statement 1 also holds for every action $a$.
+
+Now suppose that Statements 1 and 2 hold at time $t=k$. Consider the next action $a_k$. If $a_k$ is applicable in the original problem, then Statement 1 implies that it is also applicable in the relaxed problem. The positive predicates after applying $a_k$ are
+
+$$
+Pos^{k+1}_{\mathrm{old}} =
+\left(Pos^k_{\mathrm{old}} \cup Add(a_k)\right) \setminus Del(a_k),
+$$
+
+$$
+Pos^{k+1}_{\mathrm{new}} =
+Pos^k_{\mathrm{new}} \cup Add(a_k).
+$$
+
+By Statement 2 at time $k$,
+
+$$
+Pos^k_{\mathrm{old}} \subseteq Pos^k_{\mathrm{new}},
+$$
+
+and hence
+
+$$
+Pos^k_{\mathrm{old}} \cup Add(a_k)
+\subseteq
+Pos^k_{\mathrm{new}} \cup Add(a_k).
+$$
+
+Removing predicates from the left-hand side preserves the inclusion, so
+
+$$
+\left(Pos^k_{\mathrm{old}} \cup Add(a_k)\right) \setminus Del(a_k)
+\subseteq
+Pos^k_{\mathrm{new}} \cup Add(a_k).
+$$
+
+Thus,
+
+$$
+Pos^{k+1}_{\mathrm{old}} \subseteq Pos^{k+1}_{\mathrm{new}},
+$$
+
+which proves Statement 2 at time $k+1$. Because $Cond(a)$ contains only positive predicates for every action $a$, Statement 2 immediately implies Statement 1 at time $k+1$.
+
+Therefore, both statements hold for every $t$. In particular, any plan that reaches the positive goal $g$ in the original problem can be executed in the relaxed problem and also reaches $g$. Hence,
+
+$$
+S_{\mathrm{old}} \subseteq S_{\mathrm{new}}.
+$$
+
+#### Part 2: Counterexample with Negative Preconditions and Goals
+
+The relaxation property does not necessarily hold when negative preconditions or negative goals are allowed. Consider two predicates, $A$ and $B$, with
+
+$$
+I = \{A, B\},
+\qquad
+G = \{\neg A, \neg B\}.
+$$
+
+Suppose the original problem has the following two actions:
+
+$$
+a: \operatorname{Pre}(a) = \{B\},
+\qquad
+\operatorname{Eff}(a) = \{\neg B\},
+$$
+
+$$
+b: \operatorname{Pre}(b) = \{\neg B\},
+\qquad
+\operatorname{Eff}(b) = \{\neg A\}.
+$$
+
+In the original problem, the action sequence $\langle a, b \rangle$ is a solution:
+
+$$
+\{A, B\}
+\xrightarrow{a}
+\{A, \neg B\}
+\xrightarrow{b}
+\{\neg A, \neg B\}
+\models G.
+$$
+
+After all negative effects are removed, both actions have no effects:
+
+$$
+\operatorname{Eff}'(a) = \varnothing,
+\qquad
+\operatorname{Eff}'(b) = \varnothing.
+$$
+
+Thus, applying $a$ in the relaxed problem leaves the state unchanged:
+
+$$
+\{A, B\}
+\xrightarrow{a}
+\{A, B\}.
+$$
+
+Therefore, $\neg B \notin \{A, B\}$, so $b$ is not applicable. Hence, $\langle a, b \rangle$ is a valid plan for the original problem but not for the relaxed problem. Moreover, because neither $A$ nor $B$ can become false in the relaxed problem, $G = \{\neg A, \neg B\}$ is unreachable. Therefore, removing negative effects is not a relaxation when negative preconditions or goals are permitted.
 
 ## Problem 3 – Hierarchical Task Planning
 
