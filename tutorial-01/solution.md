@@ -4,6 +4,10 @@
 > CS4246/CS5446 Reinforcement Learning and Sequential Decision Making  
 > Semester 1, AY2026-27 · Issued: 19 Aug 2026
 
+## AI Assistance Declaration
+
+> ChatGPT was used to help convert handwritten draft solutions into Markdown and to recreate hand-drawn figures as computer-generated diagrams.  I remain responsible for the accuracy, originality, and final content of this submission.
+
 ## Problem 1 – A Blocks World
 
 Consider a blocks-world as shown in the figure below. The objective of this problem, called Middle-pop, is to remove the block $B$ in-between two other blocks, $A$ and $C$, and put it on the Table (represented by the horizontal line).
@@ -29,7 +33,65 @@ Consider a blocks-world as shown in the figure below. The objective of this prob
 
 ### Solution
 
-> _Solution placeholder: write your answers to all three sub-questions here._
+#### a) PDDL Model
+
+
+```pddl
+(define (domain middle-pop)
+  (:requirements :strips :typing)
+  (:types block surface - object)
+  (:predicates
+    (on ?x - block ?y - object)
+    (clear ?x - object)
+  )
+
+  (:action move-to-object
+    :parameters (?x - block ?from - object ?to - block)
+    :precondition (and (on ?x ?from) (clear ?x) (clear ?to))
+    :effect (and (not (on ?x ?from)) (on ?x ?to) (clear ?from) (not (clear ?to)))
+  )
+
+  (:action move-to-table
+    :parameters (?x - block ?from - object ?to - surface)
+    :precondition (and (on ?x ?from) (clear ?x))
+    :effect (and (not (on ?x ?from)) (on ?x ?to) (clear ?from))
+  )
+)
+
+(define (problem middle-pop-instance)
+  (:domain middle-pop)
+
+  (:objects
+    a b c - block
+    table - surface
+  )
+
+  (:init
+    (on a b)
+    (on b c)
+    (on c table)
+    (clear a)
+    (clear table)
+  )
+
+  (:goal
+    (and (on a c) (on b table))))
+```
+
+#### b) Forward-search tree
+
+![Forward-search tree for the Middle-pop blocks world](pictures/forward-search-tree.svg)
+
+*Figure 1: Forward search from the initial state. The search stops after generating the first goal state at depth 3; the non-solution branch returns to an already visited state and is not expanded.*
+#### c) Valid plan
+
+A valid plan is:
+
+```pddl
+(move-to-table a b table)
+(move-to-table b c table)
+(move-to-object a table c)
+```
 
 ## Problem 2 – Heuristic for Planning
 
@@ -220,4 +282,54 @@ Assuming negative literals are allowed in the initial state (closed world assump
 
 ### Solution
 
-> _Solution placeholder: write your answers to all parts of Problem 3 here._
+#### A)
+
+**i. $H1$**
+
+$
+Action(H1,\ Precond:\ \neg A,\ Effect:\ A \land \sim^\pm B)
+$
+
+**ii. $H2$**
+
+$
+Action(H2,\ Precond:\ \neg B,\ Effect:\ \sim^+ A \land \sim^\pm C)
+$
+
+**iii. $H3$**
+
+$
+Action(H3,\ Precond:\ \neg B \land \neg C,\ Effect:\ D \land E)
+$
+
+#### B)
+
+#### B) Valid HLA Sequences
+
+The valid sequences are **i** and **ii**.
+
+- **i.** $H1(P1,P3)$ transforms the initial state $\neg A \land B$ into $A \land \neg B$. Then $H2(P6)$ is applicable and establishes $\neg C$. Therefore, $H3(P8,P9)$ is applicable: $P8$ establishes $D$, and $P9$ establishes $E$.
+
+$$
+\neg A \land B
+\xrightarrow{P1,P3}
+A \land \neg B
+\xrightarrow{P6}
+A \land \neg B \land \neg C
+\xrightarrow{P8,P9}
+A \land \neg B \land \neg C \land D \land E.
+$$
+
+- **ii.** $H1(P1,P3)$ again establishes $\neg B$, and $H2(P7)$ establishes $\neg C$. Hence, $H3(P8,P10)$ is applicable: $P8$ establishes $D$, and $P10$ establishes $E$ because both $\neg B$ and $D$ hold.
+
+$$
+\neg A \land B
+\xrightarrow{P1,P3}
+A \land \neg B
+\xrightarrow{P7}
+A \land \neg B \land \neg C
+\xrightarrow{P8,P10}
+A \land \neg B \land \neg C \land D \land E.
+$$
+
+Sequences **iii** and **iv** are invalid. After $H1(P1,P2)$, predicate $B$ is true, whereas both $H2(P4)$ and $H2(P5)$ require $\neg B$. Therefore, neither sequence can proceed beyond $H1$.

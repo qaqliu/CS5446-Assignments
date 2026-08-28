@@ -25,7 +25,7 @@ tutorial-01/
 
 ### 作业 TODO
 
-- [ ] 完成并检查 solution.md 中 Problem 1–3 的全部解答。
+- [x] 完成并检查 solution.md 中 Problem 1–3 的全部解答。
 
 ## English
 
@@ -50,4 +50,4 @@ tutorial-01/
 
 ### Assignment TODO
 
-- [ ] Complete and review all solutions to Problems 1–3 in solution.md.
+- [x] Complete and review all solutions to Problems 1–3 in solution.md.
