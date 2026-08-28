@@ -4,6 +4,13 @@
 > CS4246/CS5446 Reinforcement Learning and Sequential Decision Making  
 > Semester 1, AY2026-27 · Issued: 19 Aug 2026
 
+**Group Members**
+
+- Zhang Jiazheng (A0314707H)
+- Phyo Han (A0196680R)
+- Wang Shiyu (A0354696L)
+- Liu Hengyan (A0350634J)
+
 ## AI Assistance Declaration
 
 > ChatGPT was used to help convert handwritten draft solutions into Markdown and to recreate hand-drawn figures as computer-generated diagrams.  I remain responsible for the accuracy, originality, and final content of this submission.
@@ -112,7 +119,7 @@ At time $t$, let $s^t_{\mathrm{old}}$ and $s^t_{\mathrm{new}}$ denote the states
 1. For every action $a$, if $s^t_{\mathrm{old}} \models Cond(a)$, then $s^t_{\mathrm{new}} \models Cond(a)$.
 2. $Pos^t_{\mathrm{old}} \subseteq Pos^t_{\mathrm{new}}$.
 
-Statement 1 guarantees that an action applicable in the original problem is also applicable in the relaxed problem. Statement 2 guarantees that, if $s^{t_{\mathrm{end}}}_{\mathrm{old}} \models g$, then $s^{t_{\mathrm{end}}}_{\mathrm{new}} \models g$, because every literal in $g$ is positive.
+Statement 1 guarantees that an action applicable in the original problem is also applicable in the relaxed problem. Statement 2 guarantees that, if $s_{\mathrm{old}}^{t_{\mathrm{end}}} \models g$, then $s_{\mathrm{new}}^{t_{\mathrm{end}}} \models g$, because every literal in $g$ is positive.
 
 For the base case, at $t=0$,
 
@@ -297,8 +304,6 @@ $Action(H2, \mathrm{Precond}: \neg B, \mathrm{Effect}: \sim^+ A \land \sim^\pm C
 $Action(H3, \mathrm{Precond}: \neg B \land \neg C, \mathrm{Effect}: D \land E)$
 
 #### B)
-
-#### B) Valid HLA Sequences
 
 The valid sequences are **i** and **ii**.
 
