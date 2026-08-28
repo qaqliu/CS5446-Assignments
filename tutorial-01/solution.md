@@ -185,15 +185,15 @@ $$
 Suppose the original problem has the following two actions:
 
 $$
-a: \operatorname{Pre}(a) = \{B\},
+a: \mathrm{Pre}(a) = \{B\},
 \qquad
-\operatorname{Eff}(a) = \{\neg B\},
+\mathrm{Eff}(a) = \{\neg B\},
 $$
 
 $$
-b: \operatorname{Pre}(b) = \{\neg B\},
+b: \mathrm{Pre}(b) = \{\neg B\},
 \qquad
-\operatorname{Eff}(b) = \{\neg A\}.
+\mathrm{Eff}(b) = \{\neg A\}.
 $$
 
 In the original problem, the action sequence $\langle a, b \rangle$ is a solution:
@@ -210,9 +210,9 @@ $$
 After all negative effects are removed, both actions have no effects:
 
 $$
-\operatorname{Eff}'(a) = \varnothing,
+\mathrm{Eff}'(a) = \varnothing,
 \qquad
-\operatorname{Eff}'(b) = \varnothing.
+\mathrm{Eff}'(b) = \varnothing.
 $$
 
 Thus, applying $a$ in the relaxed problem leaves the state unchanged:
