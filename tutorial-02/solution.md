@@ -49,9 +49,9 @@ For each utility function, compare the expected utility of $L_1$ and $L_2$:
 
 $$
 \begin{aligned}
-U(x) = x^2:& \qquad EU(L_1) = 1, \quad EU(L_2) = 0.5(2^2) + 0.5(0^2) = 2; \\
-U(x) = x:& \qquad EU(L_1) = 1, \quad EU(L_2) = 0.5(2) + 0.5(0) = 1; \\
-U(x) = \sqrt{x}:& \qquad EU(L_1) = 1, \quad EU(L_2) = 0.5\sqrt{2} < 1.
+U(x) = x^2:& \qquad EU(L_1) = 1, \quad EU(L_2) = 0.5(2^2) + 0.5(0^2) = 2, \quad EU(L_3) = 1(2^2) = 4; \\
+U(x) = x:& \qquad EU(L_1) = 1, \quad EU(L_2) = 0.5(2) + 0.5(0) = 1, \quad EU(L_3) = 1(2) = 2; \\
+U(x) = \sqrt{x}:& \qquad EU(L_1) = 1, \quad EU(L_2) = 0.5\sqrt{2} + 0.5(\sqrt{2}) = 0.7071 , \quad EU(L_3) = 1(\sqrt{2}) = 1.4142;
 \end{aligned}
 $$
 
