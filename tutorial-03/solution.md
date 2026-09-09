@@ -10,6 +10,7 @@
 - Phyo Han (A0196680R)
 - Wang Shiyu (A0354696L)
 - Liu Hengyan (A0350634J)
+- Cui Yi (A0353244J)
 
 ## AI Assistance Declaration
 
