@@ -16,6 +16,7 @@
 .
 ├── tutorial-01/
 ├── tutorial-02/
+├── tutorial-03/
 ├── ...
 ├── assignment-01/
 ├── project-01/
@@ -63,6 +64,10 @@ project-01/
 
 本次 Tutorial 主题为理性决策，包含三个书面推理题：基于效用函数比较彩票偏好、用期望效用分析 PacBaby 的保险决策，以及通过 Allais 悖论讨论理性偏好与可替代性公理。本次 Tutorial 不包含代码实现或实验环境配置。
 
+### Tutorial 3 — Sequential Decision Making under Uncertainty
+
+本次 Tutorial 主题为不确定性下的序列决策，包含两道必做书面推理题和一道可选开放题：使用折扣、价值迭代和策略迭代分析 Nova 火星车的无限时域 MDP；比较 Active ADP、Monte Carlo Control、SARSA 与 Q-learning 如何利用 Aster 救援无人机的经验学习策略；以及探讨强化学习与现实世界中的人类行为、演化、心理学、神经科学或教育之间的联系。本次 Tutorial 不包含代码实现或实验环境配置。
+
 ## Assignments
 
 ### Assignment 1 — Elevator Planning
@@ -87,6 +92,7 @@ Each Tutorial, Assignment, and Project has its own folder directly under the rep
 .
 ├── tutorial-01/
 ├── tutorial-02/
+├── tutorial-03/
 ├── ...
 ├── assignment-01/
 ├── project-01/
@@ -133,6 +139,10 @@ This tutorial consists of planning analysis and written reasoning questions. It 
 ### Tutorial 2 — Rational Decision Making
 
 This tutorial covers rational decision making through three written reasoning problems: matching lottery preferences to utility functions, analysing PacBaby's insurance decision with expected utility, and using the Allais paradox to examine rational preferences and the substitutability axiom. It does not require code implementation or an experimental environment.
+
+### Tutorial 3 — Sequential Decision Making under Uncertainty
+
+This tutorial covers sequential decision making under uncertainty through two required written reasoning problems and one optional open-ended problem: analysing Nova the Mars Rover's infinite-horizon MDP using discounting, value iteration, and policy iteration; comparing how Active ADP, Monte Carlo Control, SARSA, and Q-learning use Aster the rescue drone's experience to learn a policy; and investigating links between reinforcement learning and real-world human behaviour, evolution, psychology, neuroscience, or education. It does not require code implementation or an experimental environment.
 
 ## Assignments
 
