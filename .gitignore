@@ -42,10 +42,6 @@ htmlcov/
 # Jupyter and interactive notebook files
 .ipynb_checkpoints/
 
-# Keep assignment notebooks that were supplied inside checkpoint directories.
-!assignment-01/.ipynb_checkpoints/
-!assignment-01/.ipynb_checkpoints/*.ipynb
-
 # Machine-learning outputs and model checkpoints
 **/chkpt/
 **/ckpt/
