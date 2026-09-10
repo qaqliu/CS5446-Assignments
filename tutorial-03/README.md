@@ -24,7 +24,7 @@ tutorial-03/
 
 ### 作业 TODO
 
-- [ ] 完成并检查 solution.md 中 Problem 1–2 的全部解答。
+- [x] 完成并检查 solution.md 中 Problem 1–2 的全部解答。
 - [ ] （可选）完成 Problem 3 的调研与书面回答。
 
 ## English
@@ -49,5 +49,5 @@ tutorial-03/
 
 ### Assignment TODO
 
-- [ ] Complete and review all solutions to Problems 1–2 in solution.md.
+- [x] Complete and review all solutions to Problems 1–2 in solution.md.
 - [ ] (Optional) Complete the research and written response for Problem 3.

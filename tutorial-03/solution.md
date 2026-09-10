@@ -92,7 +92,7 @@ Discounting determines how much an agent values future rewards relative to immed
 Let the optimal deterministic policy be represented as
 
 $$
-\pi^* =
+\pi_{\mathrm{opt}} =
 \left(
 \arg\max_a Q(C,a),
 \arg\max_a Q(L,a)
@@ -316,10 +316,10 @@ $$
 More precisely,
 
 $$
-\pi^*=
+\pi_{\mathrm{opt}}=
 \begin{cases}
-(B,B), & 0\leq\gamma<\dfrac5{11}\\[4pt]
-(B,E), & \dfrac5{11}<\gamma<\dfrac{30}{31}\\[4pt]
+(B,B), & 0\leq\gamma<\dfrac5{11}\\
+(B,E), & \dfrac5{11}<\gamma<\dfrac{30}{31}\\
 (E,E), & \dfrac{30}{31}<\gamma<1
 \end{cases}
 $$
@@ -331,8 +331,8 @@ $$
 We can make $(E,B)$ optimal by changing only the reward of using boost in the charged state. Let
 
 $$
-R(C,B)=R(C,E)+r^*=7+r^*,
-\qquad r^*>0,
+R(C,B)=R(C,E)+x=7+x,
+\qquad x>0,
 $$
 
 while leaving all transition probabilities and all other rewards unchanged. Under the desired policy $(E,B)$, the value equations are unchanged from the analysis above:
@@ -356,7 +356,7 @@ For $(E,B)$ to be optimal, eco must be preferred at $C$ and boost must be prefer
 
 $$
 \begin{cases}
-\Delta_C=r^*+\dfrac{25\gamma}{17\gamma-20}<0\\
+\Delta_C=x+\dfrac{25\gamma}{17\gamma-20}<0\\
 \Delta_L=2+\dfrac{40\gamma}{17\gamma-20}>0\\
 0<\gamma<1
 \end{cases}
@@ -365,7 +365,7 @@ $$
 Solving the first inequality for the lower bound of $\gamma$ and the second for its upper bound gives
 
 $$
-\gamma>\frac{20r^*}{17r^*+25},
+\gamma>\frac{20x}{17x+25},
 \qquad
 \gamma<\frac{20}{37}.
 $$
@@ -373,12 +373,12 @@ $$
 For a feasible $\gamma$ to exist, its lower bound must be smaller than its upper bound:
 
 $$
-\frac{20r^*}{17r^*+25}<\frac{20}{37}
+\frac{20x}{17x+25}<\frac{20}{37}
 \quad\Longrightarrow\quad
-0<r^*<\frac54.
+0<x<\frac54.
 $$
 
-Therefore, choose $R(C,B)\in(7,8.25)$ and any $\gamma\in\left(\frac{20r^*}{17r^*+25},\frac{20}{37}\right)$
+Therefore, choose $R(C,B)\in(7,8.25)$ and any $\gamma\in\left(\frac{20x}{17x+25},\frac{20}{37}\right)$
 , the unique optimal policy is to use eco when charged and boost when low, namely $(E,B)$.
 
 **d)** What does the discount factor $\gamma$ represent in practical terms? Why can $\gamma = 1$ cause problems?
@@ -525,12 +525,12 @@ $$
 \frac5{11}<0.8<\frac{30}{31},
 $$
 
-the optimal policy for this MDP with $gamma=0.8$ is
+the optimal policy for this MDP with $\gamma=0.8$ is
 
 $$
-\pi^*(C)=B,
+\pi_{\mathrm{opt}}(C)=B,
 \qquad
-\pi^*(L)=E.
+\pi_{\mathrm{opt}}(L)=E.
 $$
 
 That is, Nova should use boost when charged and eco when low.
