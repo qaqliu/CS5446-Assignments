@@ -35,7 +35,6 @@ from unified_planning.shortcuts import (
     UserType,
 )
 
-
 # The representation below is fixed. Hidden tests change values, not the schema.
 # Each request is a dictionary with exactly these five keys.
 REQUEST_KEYS = {"start", "goal", "deadline", "base_utility", "late_penalty"}
@@ -51,7 +50,11 @@ def validate_config(config: dict[str, Any]) -> None:
     elevator_start = config["elevator_start"]
     capacity = config["capacity"]
     requests = config["requests"]
-    if not isinstance(num_levels, int) or isinstance(num_levels, bool) or num_levels < 1:
+    if (
+        not isinstance(num_levels, int)
+        or isinstance(num_levels, bool)
+        or num_levels < 1
+    ):
         raise ValueError("num_levels must be a positive integer")
     if (
         not isinstance(elevator_start, int)
@@ -111,14 +114,17 @@ def service_batches(config: dict[str, Any], order: Sequence[int]) -> list[list[i
     active = [
         index
         for index in order
-        if config["requests"][index]["start"]
-        != config["requests"][index]["goal"]
+        if config["requests"][index]["start"] != config["requests"][index]["goal"]
     ]
     capacity = config["capacity"]
-    return [active[start : start + capacity] for start in range(0, len(active), capacity)]
+    return [
+        active[start : start + capacity] for start in range(0, len(active), capacity)
+    ]
 
 
-def evaluate_service_order(config: dict[str, Any], order: Sequence[int]) -> dict[str, Any]:
+def evaluate_service_order(
+    config: dict[str, Any], order: Sequence[int]
+) -> dict[str, Any]:
     """Replay deterministic capacity batches using the external time model.
 
     Moving from floor ``a`` to floor ``b`` takes ``abs(a - b)`` time units.
@@ -175,6 +181,7 @@ def evaluate_service_order(config: dict[str, Any], order: Sequence[int]) -> dict
 
 # COPY-FLAG-1-START
 
+
 def choose_service_order(config: dict[str, Any]) -> list[int]:
     """Return a permutation of passenger indices.
 
@@ -183,6 +190,7 @@ def choose_service_order(config: dict[str, Any]) -> list[int]:
     """
     validate_config(config)
     return list(range(len(config["requests"])))
+
 
 # COPY-FLAG-1-END
 
@@ -261,18 +269,74 @@ def generate_hierarchical(config: dict[str, Any]) -> HierarchicalProblem:
     # Add the exact preconditions and effects listed in Task 2. Do not add
     # extra guards such as start != end or not reached on unload.
 
+    # 1. move_elevator
+    # elevator at `start`
+    move_elevator.add_precondition(
+        Equals(at_elevator(move_elevator.elevator), move_elevator.start)
+    )
+    # door closed
+    move_elevator.add_precondition(Not(elevator_door_open(move_elevator.elevator)))
+    # elevator at `end`
+    move_elevator.add_effect(at_elevator(move_elevator.elevator), move_elevator.end)
+
+    # 2. load
+    # elevator and person at `floor`;
+    load.add_precondition(Equals(at_elevator(load.elevator), load.floor))
+    load.add_precondition(Equals(at_person(load.person), load.floor))
+    # door open;
+    load.add_precondition(elevator_door_open(load.elevator))
+    # `lift_count(current)`;
+    load.add_precondition(lift_count(load.current))
+    # `next_count(current,next)`;
+    load.add_precondition(next_count(load.current, load.next))
+    # person not reached
+    load.add_precondition(Not(reached(load.person)))
+
+    # person at elevator;
+    load.add_effect(at_person(load.person), load.elevator)
+    # current count false;
+    load.add_effect(lift_count(load.current), False)
+    # next count true
+    load.add_effect(lift_count(load.next), True)
+
+    # 3. unload
+    # elevator at `floor`;
+    unload.add_precondition(Equals(at_elevator(unload.elevator), unload.floor))
+    # person at elevator;
+    unload.add_precondition(Equals(at_person(unload.person), unload.elevator))
+    # door open;
+    unload.add_precondition(elevator_door_open(unload.elevator))
+    # person's destination is `floor`;
+    unload.add_precondition(Equals(destination(unload.person), unload.floor))
+    # `lift_count(current)`;
+    unload.add_precondition(lift_count(unload.current))
+    # `next_count(previous,current)`
+    unload.add_precondition(next_count(unload.previous, unload.current))
+    # person at floor;
+    unload.add_effect(at_person(unload.person), unload.floor)
+    # reached true;
+    unload.add_effect(reached(unload.person), True)
+    # current count false;
+    unload.add_effect(lift_count(unload.current), False)
+    # previous count true
+    unload.add_effect(lift_count(unload.previous), True)
+
+    # 4. open_door
+    # door closed
+    open_door.add_precondition(Not(elevator_door_open(open_door.elevator)))
+    # door open
+    open_door.add_effect(elevator_door_open(open_door.elevator), True)
+
+    # 5. close_door
+    close_door.add_precondition(elevator_door_open(close_door.elevator))
+    close_door.add_effect(elevator_door_open(close_door.elevator), False)
+
     # COPY-FLAG-2-END
 
-    problem.add_actions(
-        [move_elevator, load, unload, open_door, close_door]
-    )
+    problem.add_actions([move_elevator, load, unload, open_door, close_door])
 
-    pickup_person = problem.add_task(
-        "pickup_person", person=Person, start_floor=Floor
-    )
-    deliver_person = problem.add_task(
-        "deliver_person", person=Person, goal_floor=Floor
-    )
+    pickup_person = problem.add_task("pickup_person", person=Person, start_floor=Floor)
+    deliver_person = problem.add_task("deliver_person", person=Person, goal_floor=Floor)
     confirm_reached = problem.add_task(
         "confirm_reached", person=Person, goal_floor=Floor
     )
@@ -312,9 +376,27 @@ def main() -> None:
         "elevator_start": 2,
         "capacity": 2,
         "requests": [
-            {"start": 0, "goal": 4, "deadline": 16, "base_utility": 100, "late_penalty": 8},
-            {"start": 3, "goal": 1, "deadline": 12, "base_utility": 80, "late_penalty": 12},
-            {"start": 2, "goal": 2, "deadline": 0, "base_utility": 30, "late_penalty": 5},
+            {
+                "start": 0,
+                "goal": 4,
+                "deadline": 16,
+                "base_utility": 100,
+                "late_penalty": 8,
+            },
+            {
+                "start": 3,
+                "goal": 1,
+                "deadline": 12,
+                "base_utility": 80,
+                "late_penalty": 12,
+            },
+            {
+                "start": 2,
+                "goal": 2,
+                "deadline": 0,
+                "base_utility": 30,
+                "late_penalty": 5,
+            },
         ],
     }
     order = choose_service_order(config)
