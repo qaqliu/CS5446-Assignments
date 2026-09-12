@@ -1,21 +1,24 @@
 """Assignment 1 - Problem 2 hierarchical-planning submission template.
 
 * Group Member 1:
-    - Name:
-    - Matric number:
+    - Name: Zhang Jiazheng 
+    - Matric number:A0314707H
 
 * Group Member 2:
-    - Name:
-    - Matric number:
+    - Name: Phyo Han 
+    - Matric number:A0196680R
 
 * Group Member 3:
-    - Name:
-    - Matric number:
+    - Name: Wang Shiyu 
+    - Matric number:A0354696L
 
 * Group Member 4:
-    - Name:
-    - Matric number:
-"""
+    - Name: Liu Hengyan 
+    - Matric number:A0350634J
+
+* Group Member 5:
+    - Name: Cui Yi 
+    - Matric number:A0353244J
 
 from __future__ import annotations
 
