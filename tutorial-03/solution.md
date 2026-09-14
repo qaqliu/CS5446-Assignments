@@ -756,19 +756,3 @@ Why is exploration necessary for all four methods?
 ### Answer
 
 Exploration lets all four methods collect data for actions and outcomes that have not yet been tried: model estimates for ADP, complete returns for Monte Carlo, and TD updates for SARSA and Q-learning. Without it, an agent may never discover an action that is better than its current greedy choice.
-
-## (Optional) Problem 3: Reinforcement Learning in the Real World
-
-Reinforcement learning is a general computational framework for learning from interaction and feedback. It has important connections to the study of learning and decision making in behavioral psychology and neuroscience, and related ideas arise in evolution and education.
-
-**a.** Investigate how reinforcement learning ideas can be used to model human behavior and decision making.
-
-### Answer
-
-> _To be completed._
-
-**b.** How is reinforcement learning relevant to one of these fields—evolution and adaptive behavior, behavioral psychology, neuroscience, or education? What connection, if any, exists between innate or biologically grounded reward signals and decision making in that area? How have findings or insights from that area influenced the development of reinforcement learning techniques in machine learning or AI?
-
-### Answer
-
-> _To be completed._
