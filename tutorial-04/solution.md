@@ -152,7 +152,7 @@ $$
 
 > _To be completed._
 
-**(c) Clipping calculation.** Let $\epsilon=0.2$ and $r_t=1.3$. Compute $\operatorname{clip}(r_t,1-\epsilon,1+\epsilon)$.
+**(c) Clipping calculation.** Let $\epsilon=0.2$ and $r_t=1.3$. Compute $\mathrm{clip}(r_t,1-\epsilon,1+\epsilon)$.
 
 ### Answer
 
@@ -163,7 +163,7 @@ $$
 $$
 u=r_t\hat A_t,
 \qquad
-c=\operatorname{clip}(r_t,1-\epsilon,1+\epsilon)\hat A_t.
+c=\mathrm{clip}(r_t,1-\epsilon,1+\epsilon)\hat A_t.
 $$
 
 Then compute the per-sample PPO objective
