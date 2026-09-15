@@ -12,7 +12,7 @@
 2. **Aster's Rescue Route—Comparing Active RL Methods**：根据 Aster 救援无人机的观测经验，分别分析 Active ADP、Monte Carlo Control、SARSA 和 Q-learning 的模型或价值更新、策略改进与探索需求。
 3. **Reinforcement Learning in the Real World**（可选）：调研强化学习如何建模人类行为和决策，以及其与演化、行为心理学、神经科学或教育的联系。
 
-本次 Tutorial 为第 5 周的书面推理练习，不涉及代码实现、编程文件、代码提交或实验环境配置。具体原题与答题占位区请见 [`solution.md`](solution.md)。
+本次 Tutorial 为第 5 周的书面推理练习，不涉及代码实现、编程文件、代码提交或实验环境配置。具体原题与答题区请见 [`solution.md`](solution.md)。
 
 ### 目录结构
 
@@ -37,7 +37,7 @@ This directory contains Tutorial 3, **Sequential Decision Making under Uncertain
 2. **Aster's Rescue Route—Comparing Active RL Methods**: Use Aster the rescue drone's observed experience to analyse model or value updates, policy improvement, and exploration for Active ADP, Monte Carlo Control, SARSA, and Q-learning.
 3. **Reinforcement Learning in the Real World** (optional): Investigate how reinforcement learning models human behaviour and decision making, and its connections to evolution, behavioural psychology, neuroscience, or education.
 
-This is a Week 5 written-reasoning tutorial. It does not require code implementation, programming files, code submission, or an experimental environment. The original questions and answer placeholders are available in [`solution.md`](solution.md).
+This is a Week 5 written-reasoning tutorial. It does not require code implementation, programming files, code submission, or an experimental environment. The original questions and answer spaces are available in [`solution.md`](solution.md).
 
 ### Directory Structure
 

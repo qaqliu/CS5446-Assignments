@@ -17,6 +17,7 @@
 ├── tutorial-01/
 ├── tutorial-02/
 ├── tutorial-03/
+├── tutorial-04/
 ├── ...
 ├── assignment-01/
 ├── project-01/
@@ -58,15 +59,17 @@ project-01/
 
 本次 Tutorial 是 NUS CS5446 的第一个作业，主题为 Real World Planning and Acting，包含与 Blocks World、Heuristic for Planning 和 Hierarchical Task Planning 相关的三个问题。
 
-本次 Tutorial 是规划概念分析和书面推理题，不包含代码实现、编程文件或代码提交，也不需要单独配置和运行实验环境。
-
 ### Tutorial 2 — Rational Decision Making
 
-本次 Tutorial 主题为理性决策，包含三个书面推理题：基于效用函数比较彩票偏好、用期望效用分析 PacBaby 的保险决策，以及通过 Allais 悖论讨论理性偏好与可替代性公理。本次 Tutorial 不包含代码实现或实验环境配置。
+本次 Tutorial 主题为理性决策，包含三个书面推理题：基于效用函数比较彩票偏好、用期望效用分析 PacBaby 的保险决策，以及通过 Allais 悖论讨论理性偏好与可替代性公理。
 
 ### Tutorial 3 — Sequential Decision Making under Uncertainty
 
-本次 Tutorial 主题为不确定性下的序列决策，包含两道必做书面推理题和一道可选开放题：使用折扣、价值迭代和策略迭代分析 Nova 火星车的无限时域 MDP；比较 Active ADP、Monte Carlo Control、SARSA 与 Q-learning 如何利用 Aster 救援无人机的经验学习策略；以及探讨强化学习与现实世界中的人类行为、演化、心理学、神经科学或教育之间的联系。本次 Tutorial 不包含代码实现或实验环境配置。
+本次 Tutorial 主题为不确定性下的序列决策，包含两道必做书面推理题和一道可选开放题：使用折扣、价值迭代和策略迭代分析 Nova 火星车的无限时域 MDP；比较 Active ADP、Monte Carlo Control、SARSA 与 Q-learning 如何利用 Aster 救援无人机的经验学习策略；以及探讨强化学习与现实世界中的人类行为、演化、心理学、神经科学或教育之间的联系。
+
+### Tutorial 4 — Function Approximation and Policy Search
+
+本次 Tutorial 主题为函数近似与策略搜索，包含五道书面推理题：复习线性回归、梯度下降与深度学习；推导 TD 和 Q-learning 的函数近似更新；分析 REINFORCE 的策略梯度与 baseline；并理解 PPO 的概率比、裁剪目标与其同 TRPO KL 约束的关系。。
 
 ## Assignments
 
@@ -93,6 +96,7 @@ Each Tutorial, Assignment, and Project has its own folder directly under the rep
 ├── tutorial-01/
 ├── tutorial-02/
 ├── tutorial-03/
+├── tutorial-04/
 ├── ...
 ├── assignment-01/
 ├── project-01/
@@ -134,15 +138,17 @@ The solution or documentation in each Tutorial, Assignment, or Project folder wi
 
 This is the first Tutorial for NUS CS5446 and focuses on real-world planning and acting. It contains three problems related to Blocks World, Heuristic for Planning, and Hierarchical Task Planning.
 
-This tutorial consists of planning analysis and written reasoning questions. It does not include code implementation, programming files, code submission, or a separate environment for running experiments.
-
 ### Tutorial 2 — Rational Decision Making
 
-This tutorial covers rational decision making through three written reasoning problems: matching lottery preferences to utility functions, analysing PacBaby's insurance decision with expected utility, and using the Allais paradox to examine rational preferences and the substitutability axiom. It does not require code implementation or an experimental environment.
+This tutorial covers rational decision making through three written reasoning problems: matching lottery preferences to utility functions, analysing PacBaby's insurance decision with expected utility, and using the Allais paradox to examine rational preferences and the substitutability axiom.
 
 ### Tutorial 3 — Sequential Decision Making under Uncertainty
 
-This tutorial covers sequential decision making under uncertainty through two required written reasoning problems and one optional open-ended problem: analysing Nova the Mars Rover's infinite-horizon MDP using discounting, value iteration, and policy iteration; comparing how Active ADP, Monte Carlo Control, SARSA, and Q-learning use Aster the rescue drone's experience to learn a policy; and investigating links between reinforcement learning and real-world human behaviour, evolution, psychology, neuroscience, or education. It does not require code implementation or an experimental environment.
+This tutorial covers sequential decision making under uncertainty through two required written reasoning problems and one optional open-ended problem: analysing Nova the Mars Rover's infinite-horizon MDP using discounting, value iteration, and policy iteration; comparing how Active ADP, Monte Carlo Control, SARSA, and Q-learning use Aster the rescue drone's experience to learn a policy; and investigating links between reinforcement learning and real-world human behaviour, evolution, psychology, neuroscience, or education.
+
+### Tutorial 4 — Function Approximation and Policy Search
+
+This tutorial covers function approximation and policy search through five written reasoning problems: reviewing linear regression, gradient descent, and deep learning; deriving function-approximation updates for TD learning and Q-learning; analysing the REINFORCE policy gradient and baselines; and understanding PPO probability ratios, clipping objectives, and their relationship to the KL-divergence constraint in TRPO.
 
 ## Assignments
 
