@@ -63,6 +63,7 @@ logs/
 *.zip
 *.tar
 *.tar.gz
+!assignment-01/A0314707H-A0196680R-A0354696L-A0350634J-A0353244J.zip
 
 # Operating-system files
 .DS_Store

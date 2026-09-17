@@ -19,6 +19,10 @@
 * Group Member 5:
     - Name: Cui Yi
     - Matric number:A0353244J
+
+* Collaborators: None
+
+* Sources: None
 """
 
 from __future__ import annotations
@@ -185,15 +189,151 @@ def evaluate_service_order(
 
 # COPY-FLAG-1-START
 
+from itertools import permutations
+from time import monotonic
+
+# Each policy call runs in its own process and is killed at 10 seconds.
+_TIME_BUDGET = 7.0
+# States retained per dynamic-programming layer. Ten active passengers need
+# roughly 1,200, so this bound only engages on out-of-spec inputs.
+_BEAM = 20000
+
 
 def choose_service_order(config: dict[str, Any]) -> list[int]:
-    """Return a permutation of passenger indices.
+    """Return a permutation of passenger indices maximizing total utility.
 
-    The starter policy is deliberately valid but usually suboptimal. Replace it
-    with your own policy. The quality objective is maximum total utility.
+    Enumerating permutations is factorial, but under the fixed batching protocol
+    the utility still obtainable depends only on which passengers have already
+    been served, the floor the lift finished on, and the clock. That collapses
+    the search into a dynamic program over served-passenger subsets, keeping for
+    each (subset, exit floor) the Pareto frontier of (clock, utility) pairs.
     """
     validate_config(config)
-    return list(range(len(config["requests"])))
+    budget = monotonic() + _TIME_BUDGET
+    requests = config["requests"]
+    total = len(requests)
+    active = [i for i in range(total) if requests[i]["start"] != requests[i]["goal"]]
+    reached = [i for i in range(total) if requests[i]["start"] == requests[i]["goal"]]
+    # Passengers already at their goal complete at t = 0 and therefore always
+    # earn full base utility, so their position in the permutation is irrelevant
+    # to the score. Optimize over the rest and append them afterwards.
+    if not active:
+        return list(range(total))
+    return _best_active_order(config, active, budget) + reached
+
+
+def _best_active_order(
+    config: dict[str, Any], active: list[int], budget: float
+) -> list[int]:
+    """Order the passengers that actually need service, by subset DP."""
+    capacity = config["capacity"]
+    count = len(active)
+    start = [config["requests"][i]["start"] for i in active]
+    goal = [config["requests"][i]["goal"] for i in active]
+    terms = [
+        (
+            config["requests"][i]["base_utility"],
+            config["requests"][i]["late_penalty"],
+            config["requests"][i]["deadline"],
+        )
+        for i in active
+    ]
+    batch_cache: dict[tuple[int, tuple[int, ...]], Any] = {}
+
+    def effect(floor: int, batch: tuple[int, ...]):
+        """Time cost, per-passenger completion offsets, and exit floor."""
+        hit = batch_cache.get((floor, batch))
+        if hit is None:
+            here, elapsed = floor, 0
+            for member in batch:  # pick every passenger up, in order
+                elapsed += abs(here - start[member]) + 3  # move, open, load, close
+                here = start[member]
+            offsets = []
+            for member in batch:  # then drop them all off, same order
+                elapsed += abs(here - goal[member]) + 2  # move, open, unload
+                offsets.append(elapsed)  # completion is measured here
+                elapsed += 1  # close
+                here = goal[member]
+            hit = (elapsed, offsets, here)
+            batch_cache[(floor, batch)] = hit
+        return hit
+
+    def gained(batch: tuple[int, ...], offsets: list[int], clock: int) -> int:
+        """Utility this batch earns when it starts at time ``clock``."""
+        earned = 0
+        for position, member in enumerate(batch):
+            base, penalty, due = terms[member]
+            late = clock + offsets[position] - due
+            earned += base if late <= 0 else max(0, base - penalty * late)
+        return earned
+
+    def rank(item) -> int:
+        """Admissible bound: utility banked plus every unserved base utility."""
+        (mask, _floor), frontier = item
+        spare = sum(terms[m][0] for m in range(count) if not (mask >> m) & 1)
+        return max(utility for utility, _back in frontier.values()) + spare
+
+    layers = [{(0, config["elevator_start"]): {0: (0, None)}}]
+    served = 0
+    while served < count:
+        size = min(capacity, count - served)
+        current = layers[-1]
+        if len(current) > 1:
+            # Expand best-first so an early bail keeps the promising states; once
+            # the budget is spent a beam of one finishes the order greedily.
+            beam = _BEAM if monotonic() < budget else 1
+            current = sorted(current.items(), key=rank, reverse=True)[:beam]
+        else:
+            current = list(current.items())
+
+        successors: dict[tuple[int, int], dict[int, tuple[int, Any]]] = {}
+        for key, frontier in current:
+            if successors and monotonic() > budget:
+                break
+            mask, floor = key
+            remaining = [m for m in range(count) if not (mask >> m) & 1]
+            for batch in permutations(remaining, size):
+                elapsed, offsets, exit_floor = effect(floor, batch)
+                new_mask = mask
+                for member in batch:
+                    new_mask |= 1 << member
+                slot = successors.setdefault((new_mask, exit_floor), {})
+                for clock, (utility, _back) in frontier.items():
+                    banked = utility + gained(batch, offsets, clock)
+                    arrival = clock + elapsed
+                    seen = slot.get(arrival)
+                    if seen is None or seen[0] < banked:
+                        slot[arrival] = (banked, (key, clock, batch))
+
+        # Prune dominated points: a later arrival survives only if it banked
+        # strictly more utility, because every future completion time shifts by
+        # the same amount and so future utility never rises with the clock.
+        layer = {}
+        for key, slot in successors.items():
+            kept, best = {}, None
+            for clock in sorted(slot):
+                utility, back = slot[clock]
+                if best is None or utility > best:
+                    best = utility
+                    kept[clock] = (utility, back)
+            layer[key] = kept
+        layers.append(layer)
+        served += size
+
+    best_utility, best_key, best_clock = -1, None, None
+    for key, frontier in layers[-1].items():
+        for clock, (utility, _back) in frontier.items():
+            if utility > best_utility:
+                best_utility, best_key, best_clock = utility, key, clock
+
+    batches = []
+    key, clock = best_key, best_clock
+    for index in range(len(layers) - 1, 0, -1):
+        _utility, back = layers[index][key][clock]
+        key, clock, batch = back
+        batches.append(batch)
+    batches.reverse()
+    return [active[member] for batch in batches for member in batch]
 
 
 # COPY-FLAG-1-END
@@ -350,6 +490,181 @@ def generate_hierarchical(config: dict[str, Any]) -> HierarchicalProblem:
     # Add the five methods using the exact signatures, preconditions, and
     # ordered decompositions listed in Task 3.
 
+    # --- pickup_person, lift on a DIFFERENT floor: move / open / load / close
+    pickup_other = Method(
+        "method_pickup_from_other_floor",
+        elevator=Elevator,
+        person=Person,
+        elevator_floor=Floor,
+        start_floor=Floor,
+        current=Count,
+        next=Count,
+    )
+    pickup_other.set_task(pickup_person, pickup_other.person, pickup_other.start_floor)
+    pickup_other.add_precondition(
+        Equals(at_person(pickup_other.person), pickup_other.start_floor)
+    )
+    pickup_other.add_precondition(
+        Equals(at_elevator(pickup_other.elevator), pickup_other.elevator_floor)
+    )
+    pickup_other.add_precondition(Not(elevator_door_open(pickup_other.elevator)))
+    pickup_other.add_precondition(next_count(pickup_other.current, pickup_other.next))
+    pickup_other.add_precondition(Not(reached(pickup_other.person)))
+    pickup_other.add_precondition(
+        Not(Equals(pickup_other.elevator_floor, pickup_other.start_floor))
+    )
+    pickup_other_move = pickup_other.add_subtask(
+        move_elevator,
+        pickup_other.elevator,
+        pickup_other.elevator_floor,
+        pickup_other.start_floor,
+    )
+    pickup_other_open = pickup_other.add_subtask(open_door, pickup_other.elevator)
+    pickup_other_load = pickup_other.add_subtask(
+        load,
+        pickup_other.elevator,
+        pickup_other.person,
+        pickup_other.start_floor,
+        pickup_other.current,
+        pickup_other.next,
+    )
+    pickup_other_close = pickup_other.add_subtask(close_door, pickup_other.elevator)
+    pickup_other.set_ordered(
+        pickup_other_move, pickup_other_open, pickup_other_load, pickup_other_close
+    )
+    problem.add_method(pickup_other)
+
+    # --- pickup_person, lift already there: open / load / close
+    pickup_here = Method(
+        "method_pickup_from_current_floor",
+        elevator=Elevator,
+        person=Person,
+        start_floor=Floor,
+        current=Count,
+        next=Count,
+    )
+    pickup_here.set_task(pickup_person, pickup_here.person, pickup_here.start_floor)
+    pickup_here.add_precondition(
+        Equals(at_person(pickup_here.person), pickup_here.start_floor)
+    )
+    pickup_here.add_precondition(
+        Equals(at_elevator(pickup_here.elevator), pickup_here.start_floor)
+    )
+    pickup_here.add_precondition(Not(elevator_door_open(pickup_here.elevator)))
+    pickup_here.add_precondition(next_count(pickup_here.current, pickup_here.next))
+    pickup_here.add_precondition(Not(reached(pickup_here.person)))
+    pickup_here_open = pickup_here.add_subtask(open_door, pickup_here.elevator)
+    pickup_here_load = pickup_here.add_subtask(
+        load,
+        pickup_here.elevator,
+        pickup_here.person,
+        pickup_here.start_floor,
+        pickup_here.current,
+        pickup_here.next,
+    )
+    pickup_here_close = pickup_here.add_subtask(close_door, pickup_here.elevator)
+    pickup_here.set_ordered(pickup_here_open, pickup_here_load, pickup_here_close)
+    problem.add_method(pickup_here)
+
+    # --- deliver_person, goal on a DIFFERENT floor: move / open / unload / close
+    deliver_other = Method(
+        "method_deliver_to_other_floor",
+        elevator=Elevator,
+        person=Person,
+        elevator_floor=Floor,
+        goal_floor=Floor,
+        previous=Count,
+        current=Count,
+    )
+    deliver_other.set_task(
+        deliver_person, deliver_other.person, deliver_other.goal_floor
+    )
+    deliver_other.add_precondition(
+        Equals(at_person(deliver_other.person), deliver_other.elevator)
+    )
+    deliver_other.add_precondition(
+        Equals(destination(deliver_other.person), deliver_other.goal_floor)
+    )
+    deliver_other.add_precondition(
+        Equals(at_elevator(deliver_other.elevator), deliver_other.elevator_floor)
+    )
+    deliver_other.add_precondition(Not(elevator_door_open(deliver_other.elevator)))
+    deliver_other.add_precondition(
+        next_count(deliver_other.previous, deliver_other.current)
+    )
+    deliver_other.add_precondition(
+        Not(Equals(deliver_other.elevator_floor, deliver_other.goal_floor))
+    )
+    deliver_other_move = deliver_other.add_subtask(
+        move_elevator,
+        deliver_other.elevator,
+        deliver_other.elevator_floor,
+        deliver_other.goal_floor,
+    )
+    deliver_other_open = deliver_other.add_subtask(open_door, deliver_other.elevator)
+    deliver_other_unload = deliver_other.add_subtask(
+        unload,
+        deliver_other.elevator,
+        deliver_other.person,
+        deliver_other.goal_floor,
+        deliver_other.previous,
+        deliver_other.current,
+    )
+    deliver_other_close = deliver_other.add_subtask(close_door, deliver_other.elevator)
+    deliver_other.set_ordered(
+        deliver_other_move,
+        deliver_other_open,
+        deliver_other_unload,
+        deliver_other_close,
+    )
+    problem.add_method(deliver_other)
+
+    # --- deliver_person, lift already at the goal: open / unload / close
+    deliver_here = Method(
+        "method_deliver_at_current_floor",
+        elevator=Elevator,
+        person=Person,
+        goal_floor=Floor,
+        previous=Count,
+        current=Count,
+    )
+    deliver_here.set_task(deliver_person, deliver_here.person, deliver_here.goal_floor)
+    deliver_here.add_precondition(
+        Equals(at_person(deliver_here.person), deliver_here.elevator)
+    )
+    deliver_here.add_precondition(
+        Equals(destination(deliver_here.person), deliver_here.goal_floor)
+    )
+    deliver_here.add_precondition(
+        Equals(at_elevator(deliver_here.elevator), deliver_here.goal_floor)
+    )
+    deliver_here.add_precondition(Not(elevator_door_open(deliver_here.elevator)))
+    deliver_here.add_precondition(
+        next_count(deliver_here.previous, deliver_here.current)
+    )
+    deliver_here_open = deliver_here.add_subtask(open_door, deliver_here.elevator)
+    deliver_here_unload = deliver_here.add_subtask(
+        unload,
+        deliver_here.elevator,
+        deliver_here.person,
+        deliver_here.goal_floor,
+        deliver_here.previous,
+        deliver_here.current,
+    )
+    deliver_here_close = deliver_here.add_subtask(close_door, deliver_here.elevator)
+    deliver_here.set_ordered(
+        deliver_here_open, deliver_here_unload, deliver_here_close
+    )
+    problem.add_method(deliver_here)
+
+    # --- confirm_reached: empty decomposition
+    confirm = Method("method_confirm_reached", person=Person, goal_floor=Floor)
+    confirm.set_task(confirm_reached, confirm.person, confirm.goal_floor)
+    confirm.add_precondition(reached(confirm.person))
+    confirm.add_precondition(Equals(at_person(confirm.person), confirm.goal_floor))
+    confirm.add_precondition(Equals(destination(confirm.person), confirm.goal_floor))
+    problem.add_method(confirm)
+
     # COPY-FLAG-3-END
 
     # COPY-FLAG-4-START
@@ -357,6 +672,38 @@ def generate_hierarchical(config: dict[str, Any]) -> HierarchicalProblem:
     # Filter initially reached passengers, split the remaining order into
     # capacity-sized batches, add all pickups followed by all deliveries for
     # each batch, append confirm_reached tasks, and totally order the network.
+
+    requests = config["requests"]
+    network = problem.task_network
+    subtasks = []
+
+    # Per batch: every pickup in order, then every delivery in the same order.
+    for batch in service_batches(config, order):
+        for index in batch:
+            subtasks.append(
+                network.add_subtask(
+                    pickup_person, people[index], floors[requests[index]["start"]]
+                )
+            )
+        for index in batch:
+            subtasks.append(
+                network.add_subtask(
+                    deliver_person, people[index], floors[requests[index]["goal"]]
+                )
+            )
+
+    # Initially reached passengers, in their relative policy order.
+    for index in order:
+        request = requests[index]
+        if request["start"] == request["goal"]:
+            subtasks.append(
+                network.add_subtask(
+                    confirm_reached, people[index], floors[request["goal"]]
+                )
+            )
+
+    if len(subtasks) > 1:
+        network.set_ordered(*subtasks)
 
     # COPY-FLAG-4-END
 

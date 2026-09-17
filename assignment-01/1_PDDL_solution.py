@@ -20,6 +20,10 @@ Assignment 1 - Problem 1 PDDL submission template.
 * Group Member 5:
     - Name: Cui Yi
     - Matric number:A0353244J
+
+* Collaborators: None
+
+* Sources: None
 """
 
 ### AFTER YOU COMPLETE 1_PDDL.ipynb, COPY THE MARKED SECTIONS HERE ###

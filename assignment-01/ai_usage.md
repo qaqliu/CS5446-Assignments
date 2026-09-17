@@ -10,10 +10,11 @@
 
 | No. | Student Name | Matric Number |
 |:---:|:---|:---|
-| 1 | [Student 1 Name] | A0XXXXXX |
-| 2 | [Student 2 Name] | A0XXXXXX |
-| 3 | [Student 3 Name] | A0XXXXXX |
-| 4 | [Student 4 Name] | A0XXXXXX |
+| 1 | Zhang Jiazheng | A0314707H |
+| 2 | Phyo Han | A0196680R |
+| 3 | Wang Shiyu | A0354696L |
+| 4 | Liu Hengyan | A0350634J |
+| 5 | Cui Yi | A0353244J |
 
 ---
 
@@ -22,13 +23,15 @@
 *Please select one of the options below by marking `[x]`:*
 
 - [ ] **No Generative AI was used** for any part of this assignment.
-- [ ] **Generative AI was used** in accordance with NUS guidelines and course policies. Details, logs, and verification notes are documented below.
+- [x] **Generative AI was used** in accordance with NUS guidelines and course policies. Details, logs, and verification notes are documented below.
 
 ---
 
 ## 3. Summary of AI Tools Used
-
-[You may declare how AI tools were used here.]
+Claude Code (Opus), used for:
+* Ideate the solutions
+* Facilitate implementation
+* Result checking
 
 ---
 
