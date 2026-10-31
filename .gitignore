@@ -98,3 +98,21 @@ CLAUDE.md
 # Temporary files
 tmp/
 
+
+# Overleaf Connect
+.overleafconnect
+*.aux
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.bbl
+*.blg
+*.out
+*.toc
+*.pdf
+*.nav
+*.snm
+*.vrb
+*.lot
+*.lof
+%OUTDIR%/
